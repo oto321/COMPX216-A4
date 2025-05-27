@@ -64,7 +64,7 @@ def train(model, optimizer, inputs, labels, epochs):
         # backpropagation
         loss.backward()
         # gradient descent
-        optimizer.step
+        optimizer.step()
 
 
 def test(model, inputs, labels):
@@ -181,7 +181,12 @@ def test_training_set_sizes(sizes, model):
     # Task 5.1
     # Create a test set.
     # Replace the line below with your code.
-    raise NotImplementedError
+    
+    # create a set with default sample size and noise strength of 0.1 
+    test_x, test_y = make_circles(noise=0.1)
+    
+    test_inputs = Node(test_X, requires_grad=False)
+    test_labels = Node(test_y[:, np.newaxis], requires_grad=False)
 
     for size in sizes:
 
@@ -189,7 +194,16 @@ def test_training_set_sizes(sizes, model):
         # Create a training set of the specified size.
         # Obtain the training and test losses and accuracy of the model.
         # Replace the line below with your code.
-        raise NotImplementedError
+        
+        # create a set with specified sample size and noise strength of 0.1
+        training_x, training_y = make_circles(size, noise=0.1)
+
+        training_inputs = Node(training_X, requires_grad=False)
+        training_labels = Node(training_y[:, np.newaxis], requires_grad=False)
+
+        # call train_and_test to get losses and accuracy
+        training_losses, training_accs, test_losses, test_accs = train_and_test(model, (training_x, training_y), (test_x, test_y), 10, 1000, True)
+    
 
         recorded_training_losses.append(training_losses[-1])
         recorded_training_accs.append(training_accs[-1])
@@ -212,6 +226,7 @@ if __name__ == '__main__':
 
     model = NN(nin=2, nouts=[8, 1])
     print(model)
+
 
     # Tasks 1, 2, & 3 test code
     training_X, training_y = make_circles(noise=0.1)
