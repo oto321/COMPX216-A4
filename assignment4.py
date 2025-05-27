@@ -52,13 +52,38 @@ def train(model, optimizer, inputs, labels, epochs):
     # Task 1
     # Train a model for a set number of epochs.
     # Replace the line below with your code.
-    raise NotImplementedError
+
+    # iterate for specified number of epoches
+    for i in range(epochs):
+        # reset the model's gradient
+        optimizer.zero_grad()
+        # get predictions
+        predictions = model(inputs)
+        # compute the loss
+        loss = cross_entropy_loss(predictions, labels)
+        # backpropagation
+        loss.backward()
+        # gradient descent
+        optimizer.step
+
 
 def test(model, inputs, labels):
     # Task 2
     # Test a model.
     # Replace the line below with your code.
-    raise NotImplementedError
+
+    # calculate predictions
+    predictions = model(inputs)
+
+    # calculate the loss
+    loss = cross_entropy_loss(predictions, labels)
+
+    # calculate the accuracy
+    
+    accuracy = classification_accuracy(predictions, labels)
+
+
+    return loss.data, accuracy
 
 def train_and_test(model, training_data, test_data, iterations, epochs, report=False):
     model = deepcopy(model)
@@ -72,7 +97,14 @@ def train_and_test(model, training_data, test_data, iterations, epochs, report=F
     # Task 3.1
     # Initial evaluation of loss and accuracy on the training and test sets.
     # Replace the line below with your code.
-    raise NotImplementedError
+
+
+    # calculate the loss and accuracy of the training set
+    training_loss, training_acc = test(model, training_inputs, training_labels)
+
+    # calculate the loss and accuracy of the test set
+    test_loss, test_acc = test(model, test_inputs, test_labels)
+
 
     if report:
         print(f'Epoch 0: training-loss: {training_loss:.3f} | training-acc: {training_acc:.3f} | test-loss: {test_loss:.3f} | test-acc: {test_acc:.3f}')
@@ -82,11 +114,12 @@ def train_and_test(model, training_data, test_data, iterations, epochs, report=F
     test_accs = [test_acc]
     if report:
         plot_model_and_dataset(model, test_X, test_y)
-
     # Task 3.2
     # Initialise the optimizer.
+    
     # Replace the line below with your code.
-    raise NotImplementedError
+    optimizer = Optimizer(model.parameters(), lr = 0.1)
+
 
     for iter_i in range(iterations):
 
@@ -94,7 +127,17 @@ def train_and_test(model, training_data, test_data, iterations, epochs, report=F
         # Train the model.
         # Evaluate loss and accuracy on the training and test sets.
         # Replace the line below with your code.
-        raise NotImplementedError
+       
+        # train the models
+        train(model, optimizer, training_inputs, training_labels, epochs)
+
+
+        # calculate the loss and accuracy of the training set
+        training_loss, training_acc = test(model, training_inputs, training_labels)
+
+        # calculate the loss and accuracy of the test set
+        test_loss, test_acc = test(model, test_inputs, test_labels)
+
 
         if report:
             print(f'Epoch {(iter_i + 1) * epochs}: training-loss: {training_loss:.3f} | training-acc: {training_acc:.3f} | test-loss: {test_loss:.3f} | test-acc: {test_acc:.3f}')
@@ -121,8 +164,12 @@ def train_and_test(model, training_data, test_data, iterations, epochs, report=F
 
 # Task 4
 # Initialise a wider model and a deeper model.
-model_wide = None
-model_deep = None
+
+# Initialise a wider neural network
+model_wide = NN(nin=2, nouts=[16,1])
+
+# Initialise a deeper neural network 
+model_deep = NN(nin=2, nouts=[8,8,1])
 
 def test_training_set_sizes(sizes, model):
     sizes = sorted(sizes)
