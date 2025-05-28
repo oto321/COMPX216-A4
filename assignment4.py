@@ -26,6 +26,9 @@ def classification_accuracy(y_pred, labels):
 def plot_dataset(X, y):
     plt.scatter(X[:,0], X[:,1], c=y)
     plt.show()
+    # i decided to save the figure then view it later, due to the following warning
+    # UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown plt.show()
+    plt.savefig("plot6.png")
 
 def plot_model_and_dataset(model, X, y):
     # Plot the decision boundary.
@@ -42,11 +45,15 @@ def plot_model_and_dataset(model, X, y):
     pred_class = Z.data.reshape(xx.shape)
 
     # Plot the contour and training examples.
+    plt.figure() # refresh the plot to add new data to
     plt.contourf(xx, yy, pred_class)
     plt.scatter(X[:, 0], X[:, 1], c=y, s=20)
     plt.xlim(xx.min(), xx.max())
     plt.ylim(yy.min(), yy.max())
+    plt.savefig("plot1.png") # save the plot
     plt.show()
+    plt.close()
+
 
 def train(model, optimizer, inputs, labels, epochs):
     # Task 1
@@ -131,7 +138,6 @@ def train_and_test(model, training_data, test_data, iterations, epochs, report=F
         # train the models
         train(model, optimizer, training_inputs, training_labels, epochs)
 
-
         # calculate the loss and accuracy of the training set
         training_loss, training_acc = test(model, training_inputs, training_labels)
 
@@ -148,18 +154,23 @@ def train_and_test(model, training_data, test_data, iterations, epochs, report=F
         if report:
             plot_model_and_dataset(model, test_X, test_y)
     if report:
+        plt.figure() # refresh the plot to add new data to 
         plt.plot(range(0, iterations * epochs + 1, epochs), training_losses, label='training loss')
         plt.plot(range(0, iterations * epochs + 1, epochs), test_losses, label='test loss')
         plt.xlabel('epochs')
         plt.ylabel('loss')
         plt.legend()
         plt.show()
+        plt.savefig("plot2.png") # save the plot
+
+        plt.figure() # refresh the plot to add new data to
         plt.plot(range(0, iterations * epochs + 1, epochs), training_accs, label='training accuracy')
         plt.plot(range(0, iterations * epochs + 1, epochs), test_accs, label='test accuracy')
         plt.xlabel('epochs')
         plt.ylabel('accuracy')
         plt.legend()
         plt.show()
+        plt.savefig("plot3.png")# save the plot
     return training_losses, training_accs, test_losses, test_accs
 
 # Task 4
@@ -185,7 +196,7 @@ def test_training_set_sizes(sizes, model):
     # create a set with default sample size and noise strength of 0.1 
     test_x, test_y = make_circles(noise=0.1)
     
-    test_inputs = Node(test_X, requires_grad=False)
+    test_inputs = Node(test_x, requires_grad=False)
     test_labels = Node(test_y[:, np.newaxis], requires_grad=False)
 
     for size in sizes:
@@ -209,18 +220,23 @@ def test_training_set_sizes(sizes, model):
         recorded_training_accs.append(training_accs[-1])
         recorded_test_losses.append(test_losses[-1])
         recorded_test_accs.append(test_accs[-1])
+    plt.figure() # refresh the plot to add new data to
     plt.plot(sizes, recorded_training_losses, label='training loss')
     plt.plot(sizes, recorded_test_losses, label='test loss')
     plt.xlabel('training set size')
     plt.ylabel('loss')
     plt.legend()
     plt.show()
+    plt.savefig("plot4.png")# save the plot
+
+    plt.figure() # refresh the plot to add new data to 
     plt.plot(sizes, recorded_training_accs, label='training accuracy')
     plt.plot(sizes, recorded_test_accs, label='test accuracy')
     plt.xlabel('training set size')
     plt.ylabel('accuracy')
     plt.legend()
     plt.show()
+    plt.savefig("plot5.png")# save the plot
 
 if __name__ == '__main__':
 
